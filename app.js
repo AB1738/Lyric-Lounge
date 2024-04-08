@@ -147,7 +147,7 @@ const isReviewAuthor=async(req,res,next)=>{
 }
 
 const mongoose=require('mongoose')
-mongoose.connect(dburl)
+mongoose.connect(dbUrl)
     .then(()=>{
          console.log("Connection Open!!")
         })
