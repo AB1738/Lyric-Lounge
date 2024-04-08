@@ -1,4 +1,12 @@
 body{
-    background-image: url('../img/music-turntable.jpg');
+    background-image: url('https://images.unsplash.com/photo-1587731556938-38755b4803a6?q=80&w=1778&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: 100% ;
+    color: white;
+    text-align: center;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+}
+
+h1{
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #655d2d, 0 0 30px #655d2d, 0 0 40px #655d2d, 0 0 55px #655d2d, 0 0 75px #655d2d;
+    color: white;
 }

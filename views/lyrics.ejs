@@ -1,10 +1,20 @@
 <% layout('./layout/boilerplate') %>
 <link rel="stylesheet" href="/css/lyrics.css">
-<div class="container">
-    <h3><%= toTitleCase(artist) %></h3>
-    <h3><%= toTitleCase(song) %></h3>
+
+<div class="container mb-3">
+    <a href="/releases/?artist=<%=artist%>&page=1"> <h3 class="artist"><%= toTitleCase(artist) %></h3></a>
+    <h3 class="title"><%= toTitleCase(song) %></h3>
+
 </div>
 
+<div class="lyric-container">
 <div class="lyric-card">
+    <% if(!lyrics){ %>
+        <p class="lyrics">Lyrics unavailable</p>
+        <%  }else{%>
     <p class="lyrics"><%= lyrics %></p>
+    <% } %>
+    <footer><strong><h6 class="text-white">Lyrics may be unavailable or incomplete.</h6></strong></footer>
+
+</div>
 </div>

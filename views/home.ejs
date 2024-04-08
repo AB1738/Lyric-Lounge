@@ -1,3 +1,100 @@
 <% layout('./layout/boilerplate') %>
 <link rel="stylesheet" href="/css/home.css">
-    <h1>Welcome to lyric lounge buddeh!</h1>
+
+  
+<main>
+  <div class="container py-4">
+    <header class="pb-3 mb-4 border-bottom">
+    </header>
+
+    <div class="p-5 mb-4 top-content-container rounded-3 ">
+      <div class="container-fluid py-5 ">
+        <h1 class="display-5 fw-bold text-white ">🎶 Welcome to Lyric Lounge! 🎵</h1>
+        <p class="col-md-8 fs-4 text-white">Discover the heartbeat of the music world right here at Lyric Lounge, where melodies meet reviews and rhythms resonate with trends. Dive into a world of musical exploration where you can:
+          </p>
+      </div>
+    </div>
+
+    <div class="row align-items-md-stretch d-flex justify-content-between mb-4">
+
+
+      
+
+      <div class="col-md-7 mb-3">
+        <div class="h-100 p-5 text-bg-dark rounded-3 secondary-content-songs-container d-flex justify-content-center align-items-center">
+          <h2>🌟 Explore Trending Songs: Stay up-to-date with the latest hits and chart-toppers, and immerse yourself in the pulse of today's music scene.</h2>
+          
+        </div>
+      </div>
+  
+
+      <div class="col-md-4 mb-3">
+        <div class="h-100 p-5 bg-dark rounded-3 text-white secondary-content-songs-container">
+          <h2 class="d-flex justify-content-center">Featured Songs</h2>
+          <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% for(let i=0;i<8;i++){ %>
+              <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                <img src="<%= songs[i].coverArt %>" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5><%= songs[i].song %></h5>
+                    <p><%= songs[i].artist %></p>
+                  </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-md-stretch d-flex justify-content-between mb-4">
+
+
+      <div class="col-md-7 mb-3">
+        <div class="h-100 p-5 text-bg-dark rounded-3 secondary-content-album-container d-flex justify-content-center align-items-center">
+          <h2>🎵 Discover Trending Albums: From timeless classics to cutting-edge releases, uncover the albums that are making waves and shaping musical trends.</h2>
+           
+        </div>
+      </div>
+   
+
+
+      <div class="col-md-4 mb-3">
+        <div class="h-100 p-5 bg-dark rounded-3 text-white secondary-content-album-container">
+          <h2 class="d-flex justify-content-center">Featured Albums</h2>
+          <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% for(let i=0;i<8;i++){ %>
+              <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                <img src="<%= albums[i].coverArt %>" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5><%= albums[i].album %></h5>
+                    <p><%= albums[i].artist %></p>
+                  </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="p-3 mb-4 bottom-content-container rounded-3 d-flex">
+      <div class="container-fluid py-5 ">
+        <p class="col-md-8 fs-4 text-white" style="width: 100%;">💬 Review Albums: Share your thoughts, opinions, and insights by reviewing your favorite albums. Join a vibrant community of music lovers and express yourself through your reviews.</p>
+        <p class="col-md-8 fs-4 text-white" style="width: 100%;">Join us at Lyric Lounge and embark on a musical journey like no other. Whether you're a casual listener, a dedicated fan, or a seasoned critic, there's something for everyone here. Let the music take center stage as you explore, discover, and connect with the melodies that move you.
+          Let's dive in and experience the magic of music together!</p>
+
+          
+      </div>
+     
+    </div>
+
+    <footer class="pt-3 mt-4 text-body-secondary border-top d-flex justify-content-end" style="color: white;">
+      &copy; Lyric Lounge 2024
+    </footer>
+  </div>
+</main>
+

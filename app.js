@@ -10,6 +10,8 @@ const LocalStrategy = require('passport-local')
 const Review=require('./models/review')
 const User=require('./models/users')
 const cookieParser=require('cookie-parser')
+const cheerio=require('cheerio')
+const flash = require('connect-flash');
 require('dotenv').config()
 
 const sessionConfig={
@@ -30,8 +32,15 @@ app.use(express.static(path.join(__dirname,'public')))
 app.use(methodOverride('_method'))
 app.use(cookieParser())
 app.use(session(sessionConfig))
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req,res,next)=>{
+  res.locals.success=req.flash('success')
+  res.locals.error=req.flash('error')
+  next()
+})
 
 passport.use(new LocalStrategy(User.authenticate()));
 
@@ -50,6 +59,8 @@ const isAuthenticated=(req,res,next)=>{
         next()
     }
 }
+
+
 const redirectBack=(req,res,next)=>{
     req.session.returnTo = req.query.returnTo || '/';
 }
@@ -75,7 +86,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/LyricLounge')
             console.log(err)
         })
 
-
+ const toTitleCase = str => str.replace(/(^\w|\s\w)(\S*)/g, (_,m1,m2) => m1.toUpperCase()+m2.toLowerCase())
 
 // Function to fetch artist data from MusicBrainz API
 async function fetchArtistID(artistName) {
@@ -183,30 +194,93 @@ async function fetchArtistID(artistName) {
     }
    
 }
+async function fetchBillboard200Page() {
+  const url = 'https://www.billboard.com/charts/billboard-200';
+  try {
+      const response = await axios.get(url);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching Billboard 200 page:', error);
+      return null;
+  }
+}
+async function fetchBillboard100Page() {
+  const url = 'https://www.billboard.com/charts/hot-100/';
+  try {
+      const response = await axios.get(url);
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching Billboard 200 page:', error);
+      return null;
+  }
+}
+
+async function scrapeAlbumsAndArtists() {
+  const html = await fetchBillboard200Page();
+  if (!html) return;
+
+  const $ = cheerio.load(html);
+  const albums = [];
+  $('.o-chart-results-list-row-container').each((index, element) => {
+      const coverArt = $(element).find('img.c-lazy-image__img').attr('data-lazy-src')
+      const album = $(element).find('h3.c-title.a-no-trucate').text().trim()
+      const artist = $(element).find('span.c-label.a-no-trucate').text().trim()
+      albums.push({ coverArt,album, artist });
+  });
+  return albums;
+}
+async function scrapeSongsAndArtists() {
+  const html = await fetchBillboard100Page();
+  if (!html) return;
+
+  const $ = cheerio.load(html);
+  const songs = [];
+  $('.o-chart-results-list-row-container').each((index, element) => {
+      const coverArt = $(element).find('img.c-lazy-image__img').attr('data-lazy-src')
+      const song = $(element).find('h3.c-title.a-no-trucate').text().trim()
+      const artist = $(element).find('span.c-label.a-no-trucate').text().trim()
+      songs.push({ coverArt,song, artist });
+  });
+  return songs;
+}
+
   
 
-
-app.get('/',(req,res)=>{
-    res.render('home',{user:req.user})
+app.get('/',async(req,res,next)=>{
+  try{
+  const albums=await scrapeAlbumsAndArtists()
+  const songs=await scrapeSongsAndArtists()
+  
+  res.render('home',{user:req.user,albums,songs})
+  }catch(e){
+    next(e)
+  }
 })
 
 
 
 
 
-app.post('/releases',async(req,res)=>{
+app.post('/releases',async(req,res,next)=>{
+  try{
     const {artist}=req.body
     res.redirect(`/releases?artist=${artist}&page=${1}`)
+  }catch(e){
+    next(e)
+  }
 })
 
 
-app.get('/releases',async(req,res)=>{
+app.get('/releases',async(req,res,next)=>{
+  try{
     const artist=req.query.artist
     const response=await fetchArtistID(artist) //fetching artist info that contains id
     const artistId=response.id //setting artist id from response object to custom variable
     const releases=await fetchArtistData(artistId) //using artistid to search from realese-group projects pertaining to that artist
-    const albums=releases.data['release-groups'].filter(r => r['primary-type'] === 'Album') //filtering the releases to only contain albums
-
+    const albums=releases.data['release-groups'].filter(r => r['primary-type'] === 'Album'&&!r['secondary-types'].includes('Compilation')) //filtering the releases to only contain albums
+    if(albums.length<1){
+      next()
+    }
     let coverArtArray=[]
 
     function paginateArray(array, page, perPage) {
@@ -231,18 +305,31 @@ app.get('/releases',async(req,res)=>{
     const page = req.query.page || 1;
     const perPage = 6;
     
-    const result = paginateArray(albums, page, perPage);
-
+    let result = paginateArray(albums, page, perPage);
+    
+  
 
     for(let albums of result.items){
      const coverArt=await fetchCoverArt(albums.id)
+     if(coverArt==null){
+      next()
+     }else{
      coverArtArray.push(coverArt.data.images[0].image)
+     }
     }
-    res.render('releases',{artist,albums,coverArtArray,result,user:req.user})
 
+    if(coverArtArray.length<1){
+      next()
+    }
+
+    res.render('releases',{artist,albums,coverArtArray,result,user:req.user,toTitleCase})
+  }catch(e){
+    next(e)
+  }
 })
 
-app.get('/releases/:id',async(req,res)=>{
+app.get('/releases/:id',async(req,res,next)=>{
+  try{
     const{id}=req.params
    const data= await fetchArtistTracklist(id)
    const coverArt=await fetchCoverArtRelease(id)
@@ -269,66 +356,101 @@ function getTimeLength(millisec) {
 }
     const reviews=await Review.find({albumId:id}).populate('author')
     res.render('viewRelease',{tracks,data,coverArt,getTimeLength,reviews,user:req.user})
-
+  }catch(e){
+    next(e)
+  }
 })
 
 
-app.post('/releases/:id',async(req,res)=>{
+app.post('/releases/:id',isAuthenticated,async(req,res,next)=>{
+  try{
     const {id}=req.params
     const{rating,comment}=req.body
     const review=new Review({albumId:id,rating:rating,comment:comment})
     review.author=req.user
     console.log(review)
     await review.save()
+    req.flash('success','Review successfully posted')
     res.redirect(`/releases/${id}`)
+  }catch(e){
+    next(e)
+  }
 })
 
-app.patch('/releases/:id/review/:reviewId',isReviewAuthor,async(req,res)=>{
+app.get('/releases/:id/review/:reviewId',isAuthenticated,isReviewAuthor,(req,res,next)=>{
+  const {id,reviewId}=req.params
+  res.render('editReview',{user:req.user,id,reviewId})
+
+})
+
+app.patch('/releases/:id/review/:reviewId',isReviewAuthor,async(req,res,next)=>{
+  try{
     const {id,reviewId}=req.params
     const{rating,comment}=req.body
     const review=await Review.findByIdAndUpdate(reviewId,{rating:rating,comment:comment}).populate('author')
-
+    req.flash('success','Review successfully edited')
     res.redirect(`/releases/${id}`)
+  }catch(e){
+    next(e)
+  }
 })
 
 app.delete('/releases/:id/review/:reviewId',isReviewAuthor,async(req,res)=>{
+  try{
     const {id,reviewId}=req.params
     const review=await Review.findByIdAndDelete(reviewId)
+    req.flash('success','Review successfully deleted')
     res.redirect(`/releases/${id}`)
-
+  }catch(e){
+    next(e)
+  }
 })
 
 app.get('/register',(req,res)=>{
     res.render('register',{user:req.user})
 })
 
-app.post('/register',async(req,res)=>{
+app.post('/register',async(req,res,next)=>{
+  try{
     const{username,password,email}=req.body
     const user=new User({username,email})
     const newUser=await User.register(user,password)
     console.log(newUser)
     res.redirect('/')
+  }catch(e){
+    console.log(e.message)
+    if(e.message=='A user with the given username is already registered')
+    {
+      req.flash('error',`${e.message}. Please enter a valid username.`)
+      return res.redirect('/register')
+    }
+    if(e.message.includes('E11000')){
+      req.flash('error',`A user with the given email is already registered. Please enter a valid email.`)
+      return res.redirect('/register')
+    }
+    next(e)
+  }
 })
 
 app.get('/login',(req,res)=>{
     res.render('login',{user:req.user})
 })
 
-app.post('/login',passport.authenticate('local', { failureRedirect: '/login' }),async(req,res)=>{
+app.post('/login',passport.authenticate('local', { failureRedirect: '/login' ,failureFlash:true}),async(req,res)=>{
     const redirectUrl = req.cookies.redirectUrl || '/';
     res.clearCookie('redirectUrl'); // Clear the cookie after use
+    req.flash('success', `Welcome back ${req.user.username}`)
     res.redirect(redirectUrl);
 })
 
 
 
-app.get('/protected',isAuthenticated,(req,res)=>{
-    res.send("you made it to the protected route")
-})
+
 
 app.post('/logout',(req,res,next)=>{
     req.logout(function(err) {
         if (err) { return next(err); }
+        req.flash('success', `Goodbye. See you soon!`)
         res.redirect(req.headers.referer || '/');//redirects users to page they were on before they logged out
       });
 })
@@ -336,13 +458,45 @@ app.post('/logout',(req,res,next)=>{
 app.get('/lyrics/:artist/:song',async(req,res)=>{
   const{artist,song}=req.params
   const lyrics=await songLyrics(artist,song)
-  const toTitleCase = str => str.replace(/(^\w|\s\w)(\S*)/g, (_,m1,m2) => m1.toUpperCase()+m2.toLowerCase())
+  
   res.render('lyrics',{user:req.user,artist,song,lyrics,toTitleCase})
 })
-app.post('/lyrics/:artist/:song',(req,res)=>{
+app.post('/lyrics/',(req,res)=>{
   const{artist,song}=req.body
   res.redirect(`/lyrics/${artist}/${song}`)
 })
+
+app.get('/hot-songs',async(req,res,next)=>{
+  try{
+  const songs=await scrapeSongsAndArtists()
+  res.render('hotSongs',{user:req.user,songs})
+  }catch(e){
+    next(e)
+  }
+})
+app.get('/hot-albums',async(req,res,next)=>{
+  try{
+  const albums=await scrapeAlbumsAndArtists()
+  res.render('hotAlbums',{user:req.user,albums})
+  }catch(e){
+  next(e)
+  }
+})
+
+
+app.all('*',(req,res,next)=>{
+  res.status(404).render('404',{user:req.user})
+})
+
+app.use((err,req,res,next)=>{
+  if(err.message=="Cannot read properties of null (reading 'id')"){
+    return res.render('404',{user:req.user})
+  }
+  res.send(err.message)
+})
+
+
+
 
 app.listen('3000',()=>{
     console.log('listeneninin')

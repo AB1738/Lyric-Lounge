@@ -1,0 +1,47 @@
+<% layout('./layout/boilerplate') %>
+<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/editReview.css">
+
+<div class="edit-header">
+    <h2>Edit Review </h2>
+</div>
+
+    <div class="container">
+        <div class="card text-white bg-secondary mb-3 leave-review-card" style="width: 24rem " id="review-form">
+            <div class="card-header">
+                <a href="/releases/<%= id %>"><button class="btn  text-black border-secondary " style="width: 100%;" id="cancel-btn">Cancel</button></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1535587566541-97121a128dc5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="...">
+            <h5 class="card-title d-flex justify-content-center">Edit Review!</h5>
+            <form action="/releases/<%= id %>/review/<%= reviewId %>?_method=PATCH" method="POST" id="edit-form" class="needs-validation" novalidate >
+                <ul class="list-group list-group-flush ">
+                  <li class="list-group-item star-container d-flex justify-content-center ">
+                    <fieldset class="starability-growRotate d-flex justify-content-center star" >
+                      <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                      <input type="radio" id="second-rate1" name="rating" value="1" />
+                      <label for="second-rate1" title="Terrible">1 star</label>
+                      <input type="radio" id="second-rate2" name="rating" value="2" />
+                      <label for="second-rate2" title="Not good">2 stars</label>
+                      <input type="radio" id="second-rate3" name="rating" value="3" />
+                      <label for="second-rate3" title="Average">3 stars</label>
+                      <input type="radio" id="second-rate4" name="rating" value="4" />
+                      <label for="second-rate4" title="Very good">4 stars</label>
+                      <input type="radio" id="second-rate5" name="rating" value="5" />
+                      <label for="second-rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+                  </li>
+                  <li class="list-group-item  d-flex justify-content-center">
+                    <!-- <label for="comment">Review:</label> -->
+                  <textarea id="comment" name="comment" rows="5" cols="33" required class="review-textarea"></textarea>
+                  <p class="invalid-feedback">
+                      Please leave a comment.
+                  </p>
+                  </li>
+                  <li class="list-group-item  d-flex justify-content-center review-button">
+                    <button class="btn btn-warning text-white border-secondary" style="width: 100%;">Edit</button>
+                  </li>
+                </ul>
+                </form>
+                </div>
+
+            </div>

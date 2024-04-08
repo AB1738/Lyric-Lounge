@@ -1,33 +1,40 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lily+Script+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/navbar.css">
+<nav class="navbar navbar-expand-lg navbar-dark custom-nav">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Lyric Lounge</a>
+      <a class="navbar-brand" href="/" style="font-family: 'Lily Script One', cursive;">Lyric Lounge</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link" href="/hot-songs">Hot Songs</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="/hot-albums">Hot Albums</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Lyrics
             </a>
-            <form class="dropdown-menu" action="/lyrics/adele/hello" method="POST">
-              <li><input class="dropdown-item" type="text" placeholder="Enter Artist Name" name="artist"></input></li>
-              <li><input class="dropdown-item" type="text" placeholder="Enter Song Name" name="song"></input></li>
+            <form class="dropdown-menu " action="/lyrics/" method="POST">
+              <li><input class="dropdown-item" type="text" placeholder="Enter Artist Name" name="artist" required></input></li>
+              <li><input class="dropdown-item" type="text" placeholder="Enter Song Name" name="song" required></input></li>
               <li><hr class="dropdown-divider"></li>
               <li><button class="dropdown-item btn btn-outline-success">Search</button></li>
             </form>
           </li>
 
         </ul>
-        <form class="d-flex" role="search" action="/releases" method="POST">
-            <input class="form-control mr-sm-2" name="artist" placeholder="Search for an artist&#128270" aria-label="Search">
-            <button class="btn btn-outline-success " type="submit">Search</button>
+        <form class="d-flex needs-validation" novalidate role="search" action="/releases" method="POST">
+            <input class="form-control mr-sm-2" name="artist" placeholder="Search for an artist&#128270" aria-label="Search" required>
+            <p class="invalid-feedback">
+              Enter an artist's name
+            </p>
+            <button class="btn btn-outline-dark text-white" type="submit">Search</button>
         </form>
         <% if(!user) {%>
         <ul class="navbar-nav d-flex">
@@ -45,7 +52,6 @@
                 <form action="/logout" method="POST">
                   <button class="nav-link">Logout</button>
                 </form>
-                  <!-- <a href="/logout" class="nav-link">Logout</a> -->
               </li>
 
             </ul>
@@ -53,6 +59,8 @@
       </div>
     </div>
   </nav>
+
+  <script src="/js/validateForm.js"></script>
 
 
 

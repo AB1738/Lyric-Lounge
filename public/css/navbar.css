@@ -1,0 +1,10 @@
+nav{
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+
+}
+
+.custom-nav{
+    background-image: url('../img/navbar.png');
+    background-size: cover; 
+    background-repeat: no-repeat; 
+}

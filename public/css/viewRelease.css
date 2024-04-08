@@ -1,4 +1,65 @@
 body{
-    background-image: url('../img/music-note2.jpg');
+    background-image: url('https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?q=80&w=2013&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: 100% 100%;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
 }
+.review-wrapper{
+    background-image: url('https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    border-radius: 5px;
+    min-height: min-content;
+    min-width: min-content;
+    max-height: 500px; /* Set the maximum height */
+    overflow-y: auto;
+}
+.review-textarea{
+    width: 100%;
+    border: 2px solid gold; /* Sets a solid gold border with a width of 2px */
+
+}
+.review-button{
+    width: 100%;
+}
+.leave-review-card{
+    border: 2px solid grey; /* Sets a solid gold border with a width of 2px */
+}
+
+.star-container{
+    /* margin-left: 36%; */
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.reviews{
+    border: 5px solid white; /* Sets a solid gold border with a width of 2px */
+
+}
+
+.review-button-wrapper{
+    border-top: 1px solid grey;
+    border-radius: 5px;
+    display:flex;
+    justify-content: space-between;
+}
+
+
+.card-review-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.leave-review-btn-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+#review-btn{
+    background-color: gold;
+    border-radius: 5px;
+    color: white;
+}
+#review-btn:hover{
+    background-color: goldenrod
+}
+
+
+

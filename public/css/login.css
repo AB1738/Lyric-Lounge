@@ -1,0 +1,14 @@
+body{
+    background-image: url('https://images.unsplash.com/photo-1421217336522-861978fdf33a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size:     cover;                 
+    background-repeat:   no-repeat;
+    background-position:  center;
+    height:100vh;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}

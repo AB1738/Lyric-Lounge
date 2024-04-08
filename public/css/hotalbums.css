@@ -1,0 +1,19 @@
+body{
+    background-image: url(../img/hotalbumsbg.jpg);
+    background-size: auto;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+    color: white;
+    text-align: center;
+}
+
+.cover{
+    height: 200px;
+    width: 200px;
+}
+
+
+
+.song-page-header{
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #dd9716, 0 0 30px #dd9716, 0 0 40px #dd9716, 0 0 55px #dd9716, 0 0 75px #dd9716;
+    color: white;
+}

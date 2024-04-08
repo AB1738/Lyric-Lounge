@@ -1,4 +1,41 @@
 body{
-    background-image: url('../img/music-turntable.jpg');
-    background-size: 100% ;
+    background-image: url('../img/stacked-steps-haikei.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
 }
+
+
+
+  .top-content-container{
+    background-image: url('../img/top-circles.png');
+   
+  }
+
+  @media screen and (max-width: 1200px) {
+    .top-content-container{
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+  }
+  @media screen and (max-width: 1200px) {
+    .bottom-content-container{
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+  }
+  .bottom-content-container{
+    background-image: url('../img/bottom-circles.png');
+   
+  }
+
+  .secondary-content-songs-container{
+    background-image: url('../img/top-circles.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .secondary-content-album-container{
+    background-image: url('../img/bottom-circles.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }

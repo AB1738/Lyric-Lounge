@@ -1,0 +1,37 @@
+<% layout('./layout/boilerplate') %>
+<link rel="stylesheet" href="/css/hotsongs.css">
+<h1 class="song-page-header">Trending Songs</h1>
+
+<div class="container container-fluid">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Title</th>
+            <th scope="col">Artwork</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% for(let i=0;i<songs.length;i++){ %>
+            
+
+          <tr>
+            <th scope="row"><%= [i+1] %></th>
+            <td><h6><%= songs[i].artist %></h6></td>
+            
+            <td><a href="/lyrics/<%= songs[i].artist %>/<%= songs[i].song %>" style="text-decoration: none;color: black;"><h6><%= songs[i].song %></h6></a></td>
+            <td><img src="<%= songs[i].coverArt %>" alt="" class="img-thumbnail img-fluid cover"></td>
+          </tr>
+
+          <% } %>
+    
+        </tbody>
+      </table>
+</div>
+
+
+
+
+
+

@@ -1,16 +1,31 @@
 <% layout('./layout/boilerplate') %>
-
+<link rel="stylesheet" href="/css/login.css">
 <body>
-    <h1>Login Page</h1>
-    <form action="/login" method="POST">
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-default">Username:</span>
-            <input type="text" class="form-control" name="username"aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+   
+    <div class="container ">
+      <div class="card" style="width: 42rem;">
+         <div class="card-body text-center">
+          <h5 class="card-title">Login</h5>
+          <form action="/login" method="POST" class="needs-validation" novalidate>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Username:</span>
+                <input type="text" class="form-control" name="username"aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
+                <p class="invalid-feedback">
+                  Please enter a valid username
+                </p>
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Password:</span>
+                <input type="password" class="form-control"name="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
+                <p class="invalid-feedback">
+                  Please enter a valid password
+                </p>
+              </div>
+              <button class="btn btn-success">Login</button>
+        </form>
           </div>
-          <div class="input-group mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-default">Password:</span>
-            <input type="password" class="form-control"name="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-          </div>
-          <button class="btn btn-success">Login</button>
-    </form>
+      
+        </div>
+      </div>
 </body>
+<script src="/js/validateForm.js"></script>

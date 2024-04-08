@@ -1,0 +1,20 @@
+body{
+    background-image: url('https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: auto;
+    font-family: Ubuntu, "times new roman", times, roman, serif;
+    color: white;
+    text-align: center;
+}
+
+.cover{
+    height: 200px;
+    width: 200px;
+}
+
+
+
+.song-page-header{
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #0099ff, 0 0 30px #0099ff, 0 0 40px #0099ff, 0 0 55px #0099ff, 0 0 75px #0099ff;
+    color: white;
+}
+
