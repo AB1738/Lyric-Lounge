@@ -1,0 +1,26 @@
+<% layout('./layout/boilerplate') %>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>Register Page</h1>
+    <form action="/register" method="POST">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Username:</span>
+            <input type="text" class="form-control" name="username"aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Password:</span>
+            <input type="password" class="form-control"name="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Email:</span>
+            <input type="email" class="form-control" name="email" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <button class="btn btn-primary btn-success">Register</button>
+    </form>
+    
+</body>

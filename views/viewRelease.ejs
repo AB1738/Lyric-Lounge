@@ -1,7 +1,6 @@
 <% layout('./layout/boilerplate') %>
 <link rel="stylesheet" href="/css/viewRelease.css">
 
-
 <div class="container">
     <div class="row">
     <div class="col-6">
@@ -39,16 +38,24 @@
                 <button class="btn btn-success">Post</button>
               </form>
         </div>
-        <div class="card-body text-white bg-dark mb-3">
-            <% for(review of reviews){ %>
-                <p>Rating:<%= review.rating%></p>
-                <p>Review:<%= review.comment %></p>
-                <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=DELETE" method="POST">
-                    <button class="btn btn-danger mr-auto">Delete</button>
+        <% for(review of reviews){ %>
+        <div class="card-body text-white bg-dark mb-3" id="review">
+            <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=PATCH" method="POST" id="edit-form" >
+                <p id="review-rating">Rating:<%= review.rating%></p>
+                <p id="review-comment">Review:<%= review.comment %></p>
+                <button class="btn btn-warning mr-auto" id="edit-review" >Edit</button>
+            </form>
+                
+                <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=DELETE" method="POST" >
+                    <button class="btn btn-danger mr-auto" id="delete-review">Delete</button>
                 </form>
-                <% } %>
+   
+                
         </div>
+        <% } %>
     </div>
+    <script src="/js/viewRelease.js"></script>
 
   </div>
 </div>
+

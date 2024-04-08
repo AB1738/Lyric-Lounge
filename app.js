@@ -1,21 +1,25 @@
 const express=require('express')
 const app=express()
+const session=require('express-session')
 const axios=require('axios')
 const path=require('path')
 const ejsMate=require('ejs-mate')
 const methodOverride = require('method-override')
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const Review=require('./models/review')
+const User=require('./models/users')
 require('dotenv').config()
 
-
-
-
-
-const apiKey = process.env.DISCOGS_API_KEY;
-const apiSecret = process.env.DISCOGS_API_SECRET;
-
-
-
+// const sessionConfig={
+//     secret:'thisshouldbeabettersecret',
+//     resave:false,
+//     saveUninitialized:true,
+//     cookie:{
+//         expires:Date.now()+1000*60*60*24*7,
+//         maxAge:1000*60*60*24*7
+//     }
+// }
 
 app.set('view engine', 'ejs')
 app.engine('ejs',ejsMate)
@@ -23,6 +27,15 @@ app.set('views',path.join(__dirname,'views'))
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'public')))
 app.use(methodOverride('_method'))
+// app.use(session(sessionConfig))
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+
+// passport.serializeUser(User.serializeUser())
+// passport.deserializeUser(User.deserializeUser())
+// passport.use(new LocalStrategy(User.authenticate()));
+
 
 const mongoose=require('mongoose')
 mongoose.connect('mongodb://127.0.0.1:27017/LyricLounge')
@@ -139,7 +152,6 @@ app.get('/',(req,res)=>{
 
 
 app.get('/home',(req,res)=>{ 
-    // fetchData()
     res.send('ooga booga')
 })
 
@@ -188,7 +200,6 @@ app.get('/releases',async(req,res)=>{
      const coverArt=await fetchCoverArt(albums.id)
      coverArtArray.push(coverArt.data.images[0].image)
     }
-    console.log(coverArtArray)
     res.render('releases',{artist,albums,coverArtArray,result})
 
 })
@@ -197,9 +208,7 @@ app.get('/releases/:id',async(req,res)=>{
     const{id}=req.params
    const data= await fetchArtistTracklist(id)
    const coverArt=await fetchCoverArtRelease(id)
-//    console.log(coverArt.data.images[0].image)
    const tracks=data.data.media[0].tracks
-//    console.log(data.data.media[0].tracks)
 
 
 function getTimeLength(millisec) {
@@ -222,13 +231,7 @@ function getTimeLength(millisec) {
 }
     const reviews=await Review.find({albumId:id})
     res.render('viewRelease',{tracks,data,coverArt,getTimeLength,reviews})
-    // console.log('Album Artist:'+data.data['artist-credit'][0].artist.name)   //Name of album artist
 
-    // for(artist of tracks[4]['artist-credit']){
-    //     console.log(artist.name)    //get all artists on the 5th song
-    // }
-    // console.log(tracks[4]['artist-credit'])
-    // res.redirect('/')
 })
 
 
@@ -237,12 +240,14 @@ app.post('/releases/:id',async(req,res)=>{
     const{rating,comment}=req.body
     const review=new Review({albumId:id,rating:rating,comment:comment})
     await review.save()
-    console.log(review)
     res.redirect(`/releases/${id}`)
 })
 
 app.patch('/releases/:id/review/:reviewId',async(req,res)=>{
-
+    const {id,reviewId}=req.params
+    const{rating,comment}=req.body
+    const review=await Review.findByIdAndUpdate(reviewId,{rating:rating,comment:comment})
+    res.redirect(`/releases/${id}`)
 })
 
 app.delete('/releases/:id/review/:reviewId',async(req,res)=>{
@@ -250,6 +255,38 @@ app.delete('/releases/:id/review/:reviewId',async(req,res)=>{
     const review=await Review.findByIdAndDelete(reviewId)
     res.redirect(`/releases/${id}`)
 
+})
+
+app.get('/register',(req,res)=>{
+    res.render('register')
+})
+
+app.post('/register',async(req,res)=>{
+    const{username,password,email}=req.body
+    // const user=new User({username,email,password})
+    const user=User.register(new User({username,password}))
+    console.log(user)
+    // await user.save()
+    res.redirect('/')
+})
+
+app.get('/login',(req,res)=>{
+    res.render('login')
+})
+
+app.post('/login',async(req,res)=>{
+    res.redirect('/')
+})
+
+app.get('/logout',(req,res)=>{
+    res.render('logout')
+})
+
+app.post('/logout',(req,res,next)=>{
+    // req.logout(function(err) {
+    //     if (err) { return next(err); }
+    //     res.redirect('/');
+    //   });
 })
 
 app.listen('3000',()=>{

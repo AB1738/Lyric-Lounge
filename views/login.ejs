@@ -1,0 +1,16 @@
+<% layout('./layout/boilerplate') %>
+
+<body>
+    <h1>Login Page</h1>
+    <form action="/login" method="POST">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Username:</span>
+            <input type="text" class="form-control" name="username"aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Password:</span>
+            <input type="password" class="form-control"name="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <button class="btn btn-success">Login</button>
+    </form>
+</body>
