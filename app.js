@@ -21,6 +21,7 @@ const MongoDBStore=require('connect-mongo')(session)
 const mongoStoreSecret=process.env.MONGO_STORE_SECRET
 const sessionSecret=process.env.SESSION_SECRET
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/LyricLounge';
+const PORT=process.env.PORT||3000
 
 
 const store=new MongoDBStore({
@@ -576,7 +577,7 @@ app.use((err,req,res,next)=>{
 
 
 
-app.listen('3000',()=>{
+app.listen(PORT,()=>{
     console.log('listeneninin')
 })
 
