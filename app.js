@@ -21,7 +21,7 @@ const helmet =require('helmet')
 const MongoDBStore=require('connect-mongo')(session)
 const mongoStoreSecret=process.env.MONGO_STORE_SECRET
 const sessionSecret=process.env.SESSION_SECRET
-const dbUrl='mongodb://127.0.0.1:27017/LyricLounge'
+const dbUrl=process.env.DB_URL
 
 const store=new MongoDBStore({
   url:dbUrl,
