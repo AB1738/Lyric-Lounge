@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV!=='production'){
+  require('dotenv').config()
+
+}
 const express=require('express')
 const app=express()
 const session=require('express-session')
@@ -12,10 +16,26 @@ const User=require('./models/users')
 const cookieParser=require('cookie-parser')
 const cheerio=require('cheerio')
 const flash = require('connect-flash');
-require('dotenv').config()
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet =require('helmet')
+const MongoDBStore=require('connect-mongo')(session)
+const mongoStoreSecret=process.env.MONGO_STORE_SECRET
+const sessionSecret=process.env.SESSION_SECRET
+const dbUrl='mongodb://127.0.0.1:27017/LyricLounge'
+
+const store=new MongoDBStore({
+  url:dbUrl,
+  secret:mongoStoreSecret,
+  touchAfter:24*60*60
+})
+
+store.on('error',function(e){
+  console.log('Session store error',e)
+})
 
 const sessionConfig={
-    secret:'thisshouldbeabettersecret',
+    store,
+    secret:sessionSecret,
     resave:false,
     saveUninitialized:true,
     cookie:{
@@ -35,6 +55,53 @@ app.use(session(sessionConfig))
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(mongoSanitize());
+app.use(helmet());
+
+
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://fonts.googleapis.com/",
+    "https://fonts.gstatic.com/",
+    "https://cdn.jsdelivr.net",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://fonts.googleapis.com/",
+    "https://fonts.gstatic.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+
+];
+
+const fontSrcUrls = [
+  "https://fonts.googleapis.com/",
+  "https://fonts.gstatic.com/",
+];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'",],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "*",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+
 
 app.use((req,res,next)=>{
   res.locals.success=req.flash('success')
@@ -66,18 +133,21 @@ const redirectBack=(req,res,next)=>{
 }
 
 const isReviewAuthor=async(req,res,next)=>{
+  try{
     const {id,reviewId}=req.params
     const review= await Review.findById(reviewId)
    if(!review.author.equals(req.user._id)){
-    console.log('error','You do not have permission to do that!')
+    req.flash('error','You do not have permission to do that!')
     return res.redirect(`/releases/${id}`)
    }
    next()
+  }catch(e){
+    next(e)
+  }
 }
 
-
 const mongoose=require('mongoose')
-mongoose.connect('mongodb://127.0.0.1:27017/LyricLounge')
+mongoose.connect(dbUrl)
     .then(()=>{
          console.log("Connection Open!!")
         })
@@ -378,8 +448,12 @@ app.post('/releases/:id',isAuthenticated,async(req,res,next)=>{
 })
 
 app.get('/releases/:id/review/:reviewId',isAuthenticated,isReviewAuthor,(req,res,next)=>{
+  try{
   const {id,reviewId}=req.params
   res.render('editReview',{user:req.user,id,reviewId})
+  }catch(e){
+    next(e)
+  }
 
 })
 
@@ -490,9 +564,13 @@ app.all('*',(req,res,next)=>{
 
 app.use((err,req,res,next)=>{
   if(err.message=="Cannot read properties of null (reading 'id')"){
-    return res.render('404',{user:req.user})
+    return res.status(404).render('404',{user:req.user})
   }
-  res.send(err.message)
+  if(err.message=="Cannot read properties of null (reading 'author')"){
+    return res.status(404).render('404',{user:req.user})
+  }
+  console.log(err.message)
+  res.status(404).render('404',{user:req.user})
 })
 
 
