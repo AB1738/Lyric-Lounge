@@ -270,7 +270,7 @@ async function fetchBillboard200Page() {
       const response = await axios.get(url, { timeout: 7500 });
       return response.data;
   } catch (error) {
-      console.error('Error fetching Billboard 200 page:', error);
+      console.log('Error fetching Billboard 200 page:',error.toJSON());
       return null;
   }
 }
@@ -280,8 +280,8 @@ async function fetchBillboard100Page() {
       const response = await axios.get(url, { timeout: 7500 });
       return response.data;
   } catch (error) {
-      console.error('Error fetching Billboard 100 page:', error);
-      return null;
+    console.log('Error fetching Billboard 100 page:',error.toJSON());
+    return null;
   }
 }
 
