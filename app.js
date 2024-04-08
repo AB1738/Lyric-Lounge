@@ -1,7 +1,6 @@
-if(process.env.NODE_ENV!=='production'){
   require('dotenv').config()
 
-}
+
 const express=require('express')
 const app=express()
 const session=require('express-session')
@@ -21,7 +20,8 @@ const helmet =require('helmet')
 const MongoDBStore=require('connect-mongo')(session)
 const mongoStoreSecret=process.env.MONGO_STORE_SECRET
 const sessionSecret=process.env.SESSION_SECRET
-const dbUrl=process.env.DB_URL
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/LyricLounge';
+
 
 const store=new MongoDBStore({
   url:dbUrl,
