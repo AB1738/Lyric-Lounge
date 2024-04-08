@@ -267,7 +267,7 @@ async function fetchArtistID(artistName) {
 async function fetchBillboard200Page() {
   const url = 'https://www.billboard.com/charts/billboard-200';
   try {
-      const response = await axios.get(url, { timeout: 5000 });
+      const response = await axios.get(url, { timeout: 7500 });
       return response.data;
   } catch (error) {
       console.error('Error fetching Billboard 200 page:', error);
@@ -277,10 +277,10 @@ async function fetchBillboard200Page() {
 async function fetchBillboard100Page() {
   const url = 'https://www.billboard.com/charts/hot-100/';
   try {
-      const response = await axios.get(url, { timeout: 5000 });
+      const response = await axios.get(url, { timeout: 7500 });
       return response.data;
   } catch (error) {
-      console.error('Error fetching Billboard 200 page:', error);
+      console.error('Error fetching Billboard 100 page:', error);
       return null;
   }
 }
