@@ -1,3 +1,7 @@
+
+
+
+ 
  const editReview=()=>{
     const review=document.querySelectorAll('#review')
     const editBtn=document.querySelectorAll('#edit-review')
@@ -33,7 +37,7 @@
             submitBtn.classList.add('mr-auto')
             submitBtn.textContent='Post'
 
-            editForm[i].insertBefore(ratingLabel,editForm[i].children[0])
+            editForm[i].insertBefore(ratingLabel,editForm[i].children[1])
             editForm[i].insertBefore(inputLabel,editForm[i].children[2])
             
             editForm[i].append(submitBtn)
@@ -45,3 +49,4 @@
  }
  editReview()
 
+ 

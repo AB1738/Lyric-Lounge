@@ -29,7 +29,18 @@
     <% const releaseID = match ? match[1] : null %>
 
     <div class="col-6">
-        <div class="card text-white bg-dark mb-3" style="width: 100%">
+        
+        <% if(!user){ %>
+            <button class="btn btn-primary" id="review-btn"><a href="/login" style="text-decoration: none; color: white;">Leave A Review!</a></button>
+            <% for(review of reviews){ %>
+                <div class="card-body text-white bg-dark mb-3" id="review">
+                        <p id="review-rating">Rating: <%= review.rating%></p>
+                        <p id="review-comment">Review: <%= review.comment %></p>      
+                </div>
+                <% } %>
+            <% }else{ %>
+        <button class="btn btn-primary" id="review-btn">Leave A Review!</a></button>
+        <div class="card text-white bg-dark mb-3" style="width: 100% ;display: none;" id="review-form">
             <form action="/releases/<%= releaseID %>" method="POST">
                 <label for="rating">Rating:</label>
                 <input type="range" name="rating" id="rating">
@@ -39,22 +50,29 @@
               </form>
         </div>
         <% for(review of reviews){ %>
-        <div class="card-body text-white bg-dark mb-3" id="review">
+        <div class="card-body text-white bg-dark mb-5" id="review">
+            <% if(user._id.toString()!==review.author._id.toString()){ %>
+                <h6 id="alternative-review-user">User: <%= review.author.username %></h6>
+                <p id="alternative-review-rating">Rating: <%= review.rating %></p>
+                <p id="alternative-review-comment">Review: <%= review.comment %></p>
+                <% } else{%>
             <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=PATCH" method="POST" id="edit-form" >
-                <p id="review-rating">Rating:<%= review.rating%></p>
-                <p id="review-comment">Review:<%= review.comment %></p>
+                <h6 id="review-user">User: <%= review.author.username %></h6>
+                <p id="review-rating">Rating: <%= review.rating%></p>
+                <p id="review-comment">Review: <%= review.comment %></p>
                 <button class="btn btn-warning mr-auto" id="edit-review" >Edit</button>
             </form>
                 
                 <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=DELETE" method="POST" >
                     <button class="btn btn-danger mr-auto" id="delete-review">Delete</button>
                 </form>
-   
-                
+                <% } %>
         </div>
+        <% } %>
         <% } %>
     </div>
     <script src="/js/viewRelease.js"></script>
+    <script src="/js/viewReleaseLoginBtn.js"></script>
 
   </div>
 </div>

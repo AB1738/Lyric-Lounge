@@ -6,20 +6,21 @@ const path=require('path')
 const ejsMate=require('ejs-mate')
 const methodOverride = require('method-override')
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local')
 const Review=require('./models/review')
 const User=require('./models/users')
+const cookieParser=require('cookie-parser')
 require('dotenv').config()
 
-// const sessionConfig={
-//     secret:'thisshouldbeabettersecret',
-//     resave:false,
-//     saveUninitialized:true,
-//     cookie:{
-//         expires:Date.now()+1000*60*60*24*7,
-//         maxAge:1000*60*60*24*7
-//     }
-// }
+const sessionConfig={
+    secret:'thisshouldbeabettersecret',
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires:Date.now()+1000*60*60*24*7,
+        maxAge:1000*60*60*24*7
+    }
+}
 
 app.set('view engine', 'ejs')
 app.engine('ejs',ejsMate)
@@ -27,14 +28,41 @@ app.set('views',path.join(__dirname,'views'))
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'public')))
 app.use(methodOverride('_method'))
-// app.use(session(sessionConfig))
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(cookieParser())
+app.use(session(sessionConfig))
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 
-// passport.serializeUser(User.serializeUser())
-// passport.deserializeUser(User.deserializeUser())
-// passport.use(new LocalStrategy(User.authenticate()));
+const isAuthenticated=(req,res,next)=>{
+    if(!req.isAuthenticated()){
+        // Store the current URL in a cookie
+        res.cookie('redirectUrl', req.originalUrl);
+        console.log(res.cookie)
+        // Redirect the user to the login page
+        return res.redirect('/login');
+    }else{
+        next()
+    }
+}
+const redirectBack=(req,res,next)=>{
+    req.session.returnTo = req.query.returnTo || '/';
+}
+
+const isReviewAuthor=async(req,res,next)=>{
+    const {id,reviewId}=req.params
+    const review= await Review.findById(reviewId)
+   if(!review.author.equals(req.user._id)){
+    console.log('error','You do not have permission to do that!')
+    return res.redirect(`/releases/${id}`)
+   }
+   next()
+}
 
 
 const mongoose=require('mongoose')
@@ -147,13 +175,11 @@ async function fetchArtistID(artistName) {
 
 
 app.get('/',(req,res)=>{
-    res.render('home')
+    res.render('home',{user:req.user})
 })
 
 
-app.get('/home',(req,res)=>{ 
-    res.send('ooga booga')
-})
+
 
 
 app.post('/releases',async(req,res)=>{
@@ -200,7 +226,7 @@ app.get('/releases',async(req,res)=>{
      const coverArt=await fetchCoverArt(albums.id)
      coverArtArray.push(coverArt.data.images[0].image)
     }
-    res.render('releases',{artist,albums,coverArtArray,result})
+    res.render('releases',{artist,albums,coverArtArray,result,user:req.user})
 
 })
 
@@ -229,8 +255,8 @@ function getTimeLength(millisec) {
     }
     return minutes + ":" + seconds;
 }
-    const reviews=await Review.find({albumId:id})
-    res.render('viewRelease',{tracks,data,coverArt,getTimeLength,reviews})
+    const reviews=await Review.find({albumId:id}).populate('author')
+    res.render('viewRelease',{tracks,data,coverArt,getTimeLength,reviews,user:req.user})
 
 })
 
@@ -239,18 +265,21 @@ app.post('/releases/:id',async(req,res)=>{
     const {id}=req.params
     const{rating,comment}=req.body
     const review=new Review({albumId:id,rating:rating,comment:comment})
+    review.author=req.user
+    console.log(review)
     await review.save()
     res.redirect(`/releases/${id}`)
 })
 
-app.patch('/releases/:id/review/:reviewId',async(req,res)=>{
+app.patch('/releases/:id/review/:reviewId',isReviewAuthor,async(req,res)=>{
     const {id,reviewId}=req.params
     const{rating,comment}=req.body
-    const review=await Review.findByIdAndUpdate(reviewId,{rating:rating,comment:comment})
+    const review=await Review.findByIdAndUpdate(reviewId,{rating:rating,comment:comment}).populate('author')
+
     res.redirect(`/releases/${id}`)
 })
 
-app.delete('/releases/:id/review/:reviewId',async(req,res)=>{
+app.delete('/releases/:id/review/:reviewId',isReviewAuthor,async(req,res)=>{
     const {id,reviewId}=req.params
     const review=await Review.findByIdAndDelete(reviewId)
     res.redirect(`/releases/${id}`)
@@ -258,35 +287,38 @@ app.delete('/releases/:id/review/:reviewId',async(req,res)=>{
 })
 
 app.get('/register',(req,res)=>{
-    res.render('register')
+    res.render('register',{user:req.user})
 })
 
 app.post('/register',async(req,res)=>{
     const{username,password,email}=req.body
-    // const user=new User({username,email,password})
-    const user=User.register(new User({username,password}))
-    console.log(user)
-    // await user.save()
+    const user=new User({username,email})
+    const newUser=await User.register(user,password)
+    console.log(newUser)
     res.redirect('/')
 })
 
 app.get('/login',(req,res)=>{
-    res.render('login')
+    res.render('login',{user:req.user})
 })
 
-app.post('/login',async(req,res)=>{
-    res.redirect('/')
+app.post('/login',passport.authenticate('local', { failureRedirect: '/login' }),async(req,res)=>{
+    const redirectUrl = req.cookies.redirectUrl || '/';
+    res.clearCookie('redirectUrl'); // Clear the cookie after use
+    res.redirect(redirectUrl);
 })
 
-app.get('/logout',(req,res)=>{
-    res.render('logout')
+
+
+app.get('/protected',isAuthenticated,(req,res)=>{
+    res.send("you made it to the protected route")
 })
 
 app.post('/logout',(req,res,next)=>{
-    // req.logout(function(err) {
-    //     if (err) { return next(err); }
-    //     res.redirect('/');
-    //   });
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect(req.headers.referer || '/');//redirects users to page they were on before they logged out
+      });
 })
 
 app.listen('3000',()=>{
