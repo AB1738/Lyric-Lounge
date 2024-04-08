@@ -1,0 +1,47 @@
+<% layout('./layout/boilerplate') %>
+<link rel="stylesheet" href="/css/releases.css">
+      <h1>Showing releases for <%= artist%></h1>
+
+   
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+            <% for(let i=0;i<result.items.length;i++){ %>
+            <% const coverArtUrl= coverArtArray[i]%>
+            <% const parts = coverArtUrl.split('/'); %>
+            <% const releaseID = parts[parts.length - 2]; %>
+            <div class="col">
+                <a href="/releases/<%= releaseID %>">
+                <div class="card shadow-sm">
+ 
+                    <img src="<%= coverArtUrl %>" alt="">
+                    <div class="card-body">
+                    <p class="card-text"><%= result.items[i].title %></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                       <!-- <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                      </div>  -->
+                      <!-- <small class="text-body-secondary">9 mins</small>  -->
+                    </div>
+                  </div>
+                </div>
+            </a>
+              </div>
+              <% } %>
+              <div class="ms-auto">
+                <% if (result.currentPage > 1) { %>
+                  <a href="/releases?artist=<%= artist %>&page=<%= result.currentPage - 1 %>">Previous</a>
+                <% } %>
+                Page <%= result.currentPage %> of <%= result.totalPages %>
+                <% if (result.currentPage < result.totalPages) { %>
+                    <a href="/releases?artist=<%= artist %>&page=<%= parseInt(result.currentPage) + 1 %>">Next</a>
+                <% } %>
+              </div>
+
+            </div>
+         </div>
+        </div>
+
+      
