@@ -1,7 +1,6 @@
 <% layout('./layout/boilerplate') %>
 <link rel="stylesheet" href="/css/viewRelease.css">
 <link rel="stylesheet" href="/css/stars.css">
-<link rel="stylesheet" href="/css/tempStars.css">
 <div class="container">
     <div class="row">
     <div class="col-6">
@@ -44,19 +43,20 @@
         <div class="card text-white bg-dark mb-3" style="width: 100% ;display: none;" id="review-form">
             <form action="/releases/<%= releaseID %>" method="POST">
 
-                <div class="rating">
-                    <input type="radio" id="star5" name="rating" value="5">
-                    <label for="star5"></label>
-                    <input type="radio" id="star4" name="rating" value="4">
-                    <label for="star4"></label>
-                    <input type="radio" id="star3" name="rating" value="3">
-                    <label for="star3"></label>
-                    <input type="radio" id="star2" name="rating" value="2">
-                    <label for="star2"></label>
-                    <input type="radio" id="star1" name="rating" value="1">
-                    <label for="star1"></label>
-                  </div>
-                  
+                <fieldset class="starability-growRotate">
+                    <legend>First rating:</legend>
+                    <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+                    <input type="radio" id="second-rate1" name="rating" value="1" />
+                    <label for="second-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="second-rate2" name="rating" value="2" />
+                    <label for="second-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="second-rate3" name="rating" value="3" />
+                    <label for="second-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="second-rate4" name="rating" value="4" />
+                    <label for="second-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="second-rate5" name="rating" value="5" />
+                    <label for="second-rate5" title="Amazing">5 stars</label>
+                  </fieldset>
                 <!-- <label for="rating">Rating:</label>
                 <input type="range" name="rating" id="rating"> -->
                 <label for="comment">Review:</label>
@@ -68,12 +68,12 @@
         <div class="card-body text-white bg-dark mb-5" id="review">
             <% if(user._id.toString()!==review.author._id.toString()){ %>
                 <h6 id="alternative-review-user">User: <%= review.author.username %></h6>
-                <p id="alternative-review-rating" class="card-text" >Rating: <%= review.rating %></p>
+                <p id="alternative-review-rating" class="starability-result card-text" data-rating="<%= review.rating %>">Rating: <%= review.rating %></p>
                 <p id="alternative-review-comment">Review: <%= review.comment %></p>
                 <% } else{%>
             <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=PATCH" method="POST" id="edit-form" >
                 <h6 id="review-user">User: <%= review.author.username %></h6>
-                <p id="review-rating" class=" card-text" >Rating: <%= review.rating%></p>
+                <p id="review-rating" class="starability-result card-text" data-rating="<%= review.rating %>">Rating: <%= review.rating%></p>
                 <p id="review-comment">Review: <%= review.comment %></p>
                 <button class="btn btn-warning mr-auto" id="edit-review" >Edit</button>
             </form>
@@ -89,7 +89,6 @@
 
     
 
-      
 
   
  

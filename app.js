@@ -171,6 +171,18 @@ async function fetchArtistID(artistName) {
       return null;
     }
   }
+
+  const songLyrics=async(artist,song)=>{
+    try{
+    const response=await axios.get(`https://api.lyrics.ovh/v1/${artist}/${song}`)
+    const lyrics=response.data.lyrics.split("\n").slice(1).join("\n")
+    return lyrics
+    }catch(e){
+        console.log('Invalid song and/or artist',e)
+ 
+    }
+   
+}
   
 
 
@@ -319,6 +331,17 @@ app.post('/logout',(req,res,next)=>{
         if (err) { return next(err); }
         res.redirect(req.headers.referer || '/');//redirects users to page they were on before they logged out
       });
+})
+
+app.get('/lyrics/:artist/:song',async(req,res)=>{
+  const{artist,song}=req.params
+  const lyrics=await songLyrics(artist,song)
+  const toTitleCase = str => str.replace(/(^\w|\s\w)(\S*)/g, (_,m1,m2) => m1.toUpperCase()+m2.toLowerCase())
+  res.render('lyrics',{user:req.user,artist,song,lyrics,toTitleCase})
+})
+app.post('/lyrics/:artist/:song',(req,res)=>{
+  const{artist,song}=req.body
+  res.redirect(`/lyrics/${artist}/${song}`)
 })
 
 app.listen('3000',()=>{

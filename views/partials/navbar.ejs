@@ -16,9 +16,9 @@
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Lyrics
             </a>
-            <form class="dropdown-menu">
-              <li><input class="dropdown-item" type="text" placeholder="Enter Artist's Name"></input></li>
-              <li><input class="dropdown-item" type="text" placeholder="Enter Song Name"></input></li>
+            <form class="dropdown-menu" action="/lyrics/adele/hello" method="POST">
+              <li><input class="dropdown-item" type="text" placeholder="Enter Artist Name" name="artist"></input></li>
+              <li><input class="dropdown-item" type="text" placeholder="Enter Song Name" name="song"></input></li>
               <li><hr class="dropdown-divider"></li>
               <li><button class="dropdown-item btn btn-outline-success">Search</button></li>
             </form>

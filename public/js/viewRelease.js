@@ -1,87 +1,53 @@
-
-
-
  
  const editReview=()=>{
     const review=document.querySelectorAll('#review')
+    const review2=document.querySelectorAll('#review')
     const editBtn=document.querySelectorAll('#edit-review')
     const deleteBtn=document.querySelectorAll('#delete-review')
     const rating=document.querySelectorAll('#review-rating')
     const comment=document.querySelectorAll('#review-comment')
     const editForm=document.querySelectorAll('#edit-form')
     for(let i=0;i<review.length;i++){
+        
         editBtn[i].addEventListener('click',(e)=>{
+            const firstchild=review2[i+1].innerHTML
+            console.log('edit button clicked')
             e.preventDefault()
+            const fieldset = document.createElement('fieldset');
+                fieldset.classList.add('starability-growRotate');
 
-            const fieldset=document.createElement('fieldset')
-            fieldset.classList.add('starability-growRotate')
-            const legend=document.createElement('legend')
-            legend.textContent='Rating: '
-            const fieldsetInput1=document.createElement('input')
-            fieldsetInput1.classList.add('input-no-rate')
-            fieldsetInput1.setAttribute('type','radio')
-            fieldsetInput1.setAttribute('id','no-rate')
-            fieldsetInput1.setAttribute('name','rating')
-            fieldsetInput1.setAttribute('value','0')
-            fieldsetInput1.setAttribute('aria-label','no rating')
-            fieldsetInput1.setAttribute('checked','true')
-            const fieldsetInput2=document.createElement('input')
-            fieldsetInput2.setAttribute('type','radio')
-            fieldsetInput2.setAttribute('id','first-rate1')
-            fieldsetInput2.setAttribute('name','rating')
-            fieldsetInput2.setAttribute('value','1')
-            const fieldsetLabel1=document.createElement('label')
-            fieldsetLabel1.setAttribute('for','first-rate1')
-            fieldsetLabel1.setAttribute('title','Terrible')
-            fieldsetLabel1.textContent='1 Star'
-            const fieldsetInput3=document.createElement('input')
-            fieldsetInput3.setAttribute('type','radio')
-            fieldsetInput3.setAttribute('id','first-rate2')
-            fieldsetInput3.setAttribute('name','rating')
-            fieldsetInput3.setAttribute('value','2')
-            const fieldsetLabel2=document.createElement('label')
-            fieldsetLabel2.setAttribute('for','first-rate2')
-            fieldsetLabel2.setAttribute('title','Not good')
-            fieldsetLabel2.textContent='2 Stars'
-            const fieldsetInput4=document.createElement('input')
-            fieldsetInput4.setAttribute('type','radio')
-            fieldsetInput4.setAttribute('id','first-rate3')
-            fieldsetInput4.setAttribute('name','rating')
-            fieldsetInput4.setAttribute('value','3')
-            const fieldsetLabel3=document.createElement('label')
-            fieldsetLabel3.setAttribute('for','first-rate3')
-            fieldsetLabel3.setAttribute('title','Average')
-            fieldsetLabel3.textContent='3 Stars'
-            const fieldsetInput5=document.createElement('input')
-            fieldsetInput5.setAttribute('type','radio')
-            fieldsetInput5.setAttribute('id','first-rate4')
-            fieldsetInput5.setAttribute('name','rating')
-            fieldsetInput5.setAttribute('value','4')
-            const fieldsetLabel4=document.createElement('label')
-            fieldsetLabel4.setAttribute('for','first-rate4')
-            fieldsetLabel4.setAttribute('title','Very good')
-            fieldsetLabel4.textContent='4 Stars'
-            const fieldsetInput6=document.createElement('input')
-            fieldsetInput6.setAttribute('type','radio')
-            fieldsetInput6.setAttribute('id','first-rate5')
-            fieldsetInput6.setAttribute('name','rating')
-            fieldsetInput6.setAttribute('value','5')
-            const fieldsetLabel5=document.createElement('label')
-            fieldsetLabel5.setAttribute('for','first-rate5')
-            fieldsetLabel5.setAttribute('title','Amazing')
-            fieldsetLabel5.textContent='5 Stars'
-            fieldset.appendChild(legend)
-            fieldset.appendChild(fieldsetInput1)
-            fieldset.appendChild(fieldsetInput2)
-            fieldset.appendChild(fieldsetInput3)
-            fieldset.appendChild(fieldsetInput4)
-            fieldset.appendChild(fieldsetInput5)
-            fieldset.appendChild(fieldsetInput6)
-            fieldset.appendChild(fieldsetLabel1)
-            fieldset.appendChild(fieldsetLabel2)
-            fieldset.appendChild(fieldsetLabel3)
-            fieldset.appendChild(fieldsetLabel4)
-            fieldset.appendChild(fieldsetLabel5)
+                const legend = document.createElement('legend');
+                legend.textContent = 'First rating:';
+                fieldset.appendChild(legend);
+
+                const ratings = [
+                { value: 1, title: 'Terrible', labelText: '1 star' },
+                { value: 2, title: 'Not good', labelText: '2 stars' },
+                { value: 3, title: 'Average', labelText: '3 stars' },
+                { value: 4, title: 'Very good', labelText: '4 stars' },
+                { value: 5, title: 'Amazing', labelText: '5 stars' }
+                ];
+
+                ratings.forEach(rating => {
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.id = `first-rate${rating.value}`;
+                input.name = 'rating';
+                input.value = rating.value;
+                if (rating.value === 0) input.checked = true;
+                input.setAttribute('aria-label', rating.labelText);
+                fieldset.appendChild(input);
+
+                const label = document.createElement('label');
+                label.htmlFor = `first-rate${rating.value}`;
+                label.title = rating.title;
+                label.textContent = rating.labelText;
+                fieldset.appendChild(label);
+                });
+
+
+
+         
             rating[i].replaceWith(fieldset)
 
 
@@ -116,14 +82,31 @@
             comment[i].replaceWith(input)
             editBtn[i].style.display='none'
             deleteBtn[i].style.display='none'
+            const cancelBtn=document.createElement('button')
+            cancelBtn.classList.add('btn')
+            cancelBtn.classList.add('btn-info')
+            cancelBtn.textContent='Cancel'
+            cancelBtn.removeEventListener('click',()=>{
+                console.log('event listener removed')
+            })
+            cancelBtn.addEventListener('click',()=>{
+                // const field=document.querySelectorAll('.starability-growRotate')
+                // console.log(rating[i])
+                cancelBtn.style.display='none'
+                console.log('cancel button was clicked')
+                review[i+1].innerHTML=firstchild
+                editReview()
+            })
             const submitBtn=document.createElement('button')
             submitBtn.classList.add('btn')
             submitBtn.classList.add('btn-success')
             submitBtn.classList.add('mr-auto')
             submitBtn.textContent='Post'
+            editForm[i].after(cancelBtn)
             editForm[i].appendChild(submitBtn)
             editForm[i].insertBefore(ratingLabel,editForm[i].children[1])
             editForm[i].insertBefore(inputLabel,editForm[i].children[2])
+            
             
             
            
@@ -134,4 +117,3 @@
  }
  editReview()
 
- 
