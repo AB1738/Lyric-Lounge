@@ -266,15 +266,30 @@ async function fetchArtistID(artistName) {
    
 }
 async function fetchBillboard200Page() {
-  const url = 'https://www.billboard.com/charts/billboard-200';
-  try {
-      const response = await axios.get(url, { timeout: 10000 });
-      return response.data;
-  } catch (error) {
-      console.log('Error fetching Billboard 200 page:',error.toJSON());
-      return null;
-  }
+    const url = 'https://www.billboard.com/charts/billboard-200';
+    try {
+        const response = await axios.get(url, { timeout: 7500 });
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            console.log('Error response status:', error.response.status);
+            console.log('Error response data:', error.response.data);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.log('Error request:', error.request);
+        } else {
+            // Other errors
+            console.log('Error message:', error.message);
+        }
+        // Log the error stack for debugging
+        console.log('Error stack:', error.stack);
+        return null;
+    }
 }
+
+
+
 async function fetchBillboard100Page() {
   const url = 'https://www.billboard.com/charts/hot-100/';
   try {
