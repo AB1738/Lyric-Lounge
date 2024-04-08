@@ -1,6 +1,7 @@
 <% layout('./layout/boilerplate') %>
 <link rel="stylesheet" href="/css/viewRelease.css">
-
+<link rel="stylesheet" href="/css/stars.css">
+<link rel="stylesheet" href="/css/tempStars.css">
 <div class="container">
     <div class="row">
     <div class="col-6">
@@ -34,16 +35,30 @@
             <button class="btn btn-primary" id="review-btn"><a href="/login" style="text-decoration: none; color: white;">Leave A Review!</a></button>
             <% for(review of reviews){ %>
                 <div class="card-body text-white bg-dark mb-3" id="review">
-                        <p id="review-rating">Rating: <%= review.rating%></p>
-                        <p id="review-comment">Review: <%= review.comment %></p>      
+                        <p id="review-rating" class="starability-result card-text" data-rating="<%= review.rating %>">Rating: <%= review.rating%></p>
+                        <p id="review-comment" class="card-text">Review: <%= review.comment %></p>      
                 </div>
                 <% } %>
             <% }else{ %>
         <button class="btn btn-primary" id="review-btn">Leave A Review!</a></button>
         <div class="card text-white bg-dark mb-3" style="width: 100% ;display: none;" id="review-form">
             <form action="/releases/<%= releaseID %>" method="POST">
-                <label for="rating">Rating:</label>
-                <input type="range" name="rating" id="rating">
+
+                <div class="rating">
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5"></label>
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4"></label>
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3"></label>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2"></label>
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1"></label>
+                  </div>
+                  
+                <!-- <label for="rating">Rating:</label>
+                <input type="range" name="rating" id="rating"> -->
                 <label for="comment">Review:</label>
                 <textarea id="comment" name="comment" rows="5" cols="33"></textarea>
                 <button class="btn btn-success">Post</button>
@@ -53,12 +68,12 @@
         <div class="card-body text-white bg-dark mb-5" id="review">
             <% if(user._id.toString()!==review.author._id.toString()){ %>
                 <h6 id="alternative-review-user">User: <%= review.author.username %></h6>
-                <p id="alternative-review-rating">Rating: <%= review.rating %></p>
+                <p id="alternative-review-rating" class="card-text" >Rating: <%= review.rating %></p>
                 <p id="alternative-review-comment">Review: <%= review.comment %></p>
                 <% } else{%>
             <form action="/releases/<%= releaseID %>/review/<%= review._id %>?_method=PATCH" method="POST" id="edit-form" >
                 <h6 id="review-user">User: <%= review.author.username %></h6>
-                <p id="review-rating">Rating: <%= review.rating%></p>
+                <p id="review-rating" class=" card-text" >Rating: <%= review.rating%></p>
                 <p id="review-comment">Review: <%= review.comment %></p>
                 <button class="btn btn-warning mr-auto" id="edit-review" >Edit</button>
             </form>
@@ -71,6 +86,13 @@
         <% } %>
         <% } %>
     </div>
+
+    
+
+      
+
+  
+ 
     <script src="/js/viewRelease.js"></script>
     <script src="/js/viewReleaseLoginBtn.js"></script>
 

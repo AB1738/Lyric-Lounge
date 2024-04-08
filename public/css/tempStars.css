@@ -1,0 +1,23 @@
+.rating {
+    display: inline-block;
+  }
+  
+  .rating input {
+    display: none;
+  }
+  
+  .rating label {
+    float: right;
+    padding: 0 0.1em;
+    cursor: pointer;
+  }
+  
+  .rating label:before {
+    content: '\2605';
+    font-size: 2em;
+  }
+  
+  .rating input:checked ~ label:before {
+    color: gold;
+  }
+  
