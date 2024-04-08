@@ -147,7 +147,7 @@ const isReviewAuthor=async(req,res,next)=>{
 }
 
 const mongoose=require('mongoose')
-mongoose.connect('mongodb://127.0.0.1:27017/LyricLounge')
+mongoose.connect(dburl)
     .then(()=>{
          console.log("Connection Open!!")
         })
