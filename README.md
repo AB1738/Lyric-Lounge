@@ -26,6 +26,7 @@
 ## Technologies Used
 
 - **Node.js** – JavaScript runtime for the backend.
+- **Express** – Web framework for building the server and handling HTTP requests.
 - **MongoDB** – NoSQL database for storing user accounts, reviews, and other app data.
 - **EJS** – Templating engine for rendering dynamic HTML.
 - **MusicBrainz API** – For fetching artist and album data.
