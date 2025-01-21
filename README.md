@@ -57,8 +57,9 @@
 
 ## Demo
 
-Check out the live app here:  
-[LyricLounge](https://lyric-lounge.onrender.com)
+Check out the live app here:  [LyricLounge](https://lyric-lounge.onrender.com)\
+Please wait 30-60 seconds for the site to load.
+
 
 ---
 
