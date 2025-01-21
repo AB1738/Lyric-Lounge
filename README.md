@@ -1,4 +1,4 @@
-<h1 align='center'>LyricLounge</h1>
+<h1 align='center'>LyricLounge - Music Web App</h1>
 
 **LyricLounge** is a web app that allows users to explore the world of music. Users can view trending songs and albums, search for artists and view their discography, read song lyrics, and leave reviews on albums. It is designed for music enthusiasts who want to discover new music, share their thoughts, and dive deeper into the music they love. Built with **Node.js**, **MongoDB**, **EJS**, and using APIs like **MusicBrainz**, **Lyrics.ovh**, and **Cover Art Archive**, LyricLounge brings a comprehensive music experience.
 
@@ -29,6 +29,7 @@
 - **Express** – Web framework for building the server and handling HTTP requests.
 - **MongoDB** – NoSQL database for storing user accounts, reviews, and other app data.
 - **EJS** – Templating engine for rendering dynamic HTML.
+- **Bootstrap** – Frontend framework for responsive design (used for the layout and styling).
 - **MusicBrainz API** – For fetching artist and album data.
 - **Lyrics.ovh API** – For fetching song lyrics.
 - **Cover Art Archive** – For retrieving album artwork.
